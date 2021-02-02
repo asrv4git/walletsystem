@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDAO;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * retrieve user by id
@@ -61,6 +65,8 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException("A user already exists with email: " + userProfileDataDto.getEmail());
 
         User userToAdd = modelMapper.map(userProfileDataDto, User.class);
+        //encrypted password
+        userToAdd.setPassword(passwordEncoder.encode(userProfileDataDto.getPassword()));
 
         //always create a new wallet for newly registered user
         Wallet wallet = new Wallet();

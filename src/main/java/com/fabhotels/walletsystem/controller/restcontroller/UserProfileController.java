@@ -1,13 +1,10 @@
 package com.fabhotels.walletsystem.controller.restcontroller;
 
-import com.fabhotels.walletsystem.models.entity.User;
 import com.fabhotels.walletsystem.models.dto.UserProfileDataDto;
 import com.fabhotels.walletsystem.models.entity.Wallet;
-import com.fabhotels.walletsystem.models.requestobjects.UserLoginCredential;
 import com.fabhotels.walletsystem.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,7 +40,7 @@ public class UserProfileController {
                 modelMapper.map(userService.saveNewUser(userProfileDataDto),UserProfileDataDto.class));
     }
 
-    @ApiOperation("login with username and password")
+    /*@ApiOperation("login with username and password")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "correct login credentials"),
             @ApiResponse(code = 401, message = "incorrect login credentials")
@@ -55,7 +52,7 @@ public class UserProfileController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         else
             return ResponseEntity.ok().build();
-    }
+    }*/
 
     @ApiOperation("update user profile details")
     @ApiResponse(code = 200, message = "update successful")
