@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.*;
 
-public class UserProfileDataDto {
+public class UserProfileCreateDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long userId;
 
-    @NotNull
+    @NotBlank
     @Pattern(regexp = Constants.USERNAME_REGEX)
     @Size(min = 5, max = 50)
     private String username;
@@ -20,18 +20,18 @@ public class UserProfileDataDto {
     private String firstName;
 
     @Size(max = 50)
+    @NotBlank
     private String lastName;
 
     @Email
-    @NotNull
+    @NotBlank
     @Size(min = 6, max = 100)
     private String email;
 
-    @NotBlank
+    @NotNull
     @Pattern(regexp = Constants.MOBILENUMBER_REGEX)
     private String mobileNumber;
 
-    @NotNull
     @Pattern(regexp = Constants.PASSWORD_REGEX)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;

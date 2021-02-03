@@ -1,7 +1,7 @@
 package com.fabhotels.walletsystem.controller.restcontroller;
 
-import com.fabhotels.walletsystem.models.dto.UserProfileDataDto;
-import com.fabhotels.walletsystem.models.entity.Wallet;
+import com.fabhotels.walletsystem.models.dto.UserProfileCreateDto;
+import com.fabhotels.walletsystem.models.dto.UserProfileUpdateDto;
 import com.fabhotels.walletsystem.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -12,11 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.security.Principal;
 
 @RestController
-@RequestMapping("/"+"${apiversion}/user")
+@RequestMapping("/api/"+"${apiversion}/user")
 public class UserProfileController {
 
     @Autowired
@@ -25,48 +24,28 @@ public class UserProfileController {
     @Autowired
     ModelMapper modelMapper;
 
-    @ApiOperation("Get profile details of corresponding user")
-    @ApiResponse(code = 200, message = "profile details of corresponding user")
-    @GetMapping("/{id}")
-    public ResponseEntity<UserProfileDataDto> getUserDetails(@PathVariable @NotBlank Long id){
-        return ResponseEntity.ok(modelMapper.map(userService.getUserById(id),UserProfileDataDto.class));
+    @ApiOperation("Get profile details of authenticated user")
+    @ApiResponse(code = 200, message = "profile details of authenticated user")
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileCreateDto> getUserDetails(Principal principal){
+        //authenticated user can only view his/her details
+        String userName = principal.getName();
+        return ResponseEntity.ok(userService.getUserProfileDetailsByUserName(userName));
     }
 
     @ApiOperation("Register a new user")
     @ApiResponse(code = 201, message = "successful registration")
-    @PostMapping("/register")
-    public ResponseEntity<UserProfileDataDto> addNewUser(@RequestBody @Valid UserProfileDataDto userProfileDataDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                modelMapper.map(userService.saveNewUser(userProfileDataDto),UserProfileDataDto.class));
+    @PostMapping("/signup")
+    public ResponseEntity<UserProfileCreateDto> addNewUser(@RequestBody @Valid UserProfileCreateDto userProfileCreateDto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(userService.saveNewUser(userProfileCreateDto));
     }
-
-    /*@ApiOperation("login with username and password")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "correct login credentials"),
-            @ApiResponse(code = 401, message = "incorrect login credentials")
-    })
-    @PostMapping("/login")
-    public ResponseEntity loginUser(@RequestBody @Valid UserLoginCredential loginCredential){
-        User user = userService.checkLoginCredentials(loginCredential);
-        if(user==null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        else
-            return ResponseEntity.ok().build();
-    }*/
 
     @ApiOperation("update user profile details")
     @ApiResponse(code = 200, message = "update successful")
-    @PatchMapping("/update/{id}")
-    public ResponseEntity<UserProfileDataDto> updateUser(@PathVariable @NotNull Long id,
-                                                         @RequestBody @Valid UserProfileDataDto userProfileDataDto){
-        UserProfileDataDto userData = userService.updateUserData(id, userProfileDataDto);
-        return ResponseEntity.ok(userData);
-    }
-
-    @ApiOperation("get wallet details for user")
-    @ApiResponse(code = 200, message = "retrieval of wallet details successful")
-    @GetMapping("/wallet/{userId}")
-    public ResponseEntity<Wallet> getWalletInfoForUser(@PathVariable @NotNull Long userId){
-        return ResponseEntity.ok(userService.getWalletInfoByUserId(userId));
+    @PatchMapping("/update")
+    public ResponseEntity updateUser(Principal principal, @RequestBody @Valid UserProfileUpdateDto userProfileUpdateDto){
+        userService.updateUserData(principal.getName(), userProfileUpdateDto);
+        return ResponseEntity.ok().build();
     }
 }

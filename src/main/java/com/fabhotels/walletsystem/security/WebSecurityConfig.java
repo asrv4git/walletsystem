@@ -41,12 +41,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(),"/"+apiversion+"/user/login"))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(),"/api/"+apiversion+"/user/login"))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(),userDao))
                 .authorizeRequests()
                 //configure access rule
-                .antMatchers(HttpMethod.POST, "/"+apiversion+"/user/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/"+apiversion+"/user/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/"+apiversion+"/user/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/"+apiversion+"/user/signup").permitAll()
                 .antMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated();
     }

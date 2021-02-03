@@ -9,8 +9,8 @@ public class Constants {
 
     //security constants
     public static final String API_SECRET = "SECRET";
-    //1 day
-    public static final int EXPIRATION_TIME = 24 * 60 * 60 * 1000;
+    //10 minutes
+    public static final int EXPIRATION_TIME = 10 * 60 * 1000;
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String AUTHORIZATION_HEADER = "Authorization";
 }
